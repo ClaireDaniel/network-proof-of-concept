@@ -141,21 +141,11 @@ a {
   box-shadow: var(--ui-shadow);
 }
 
-.WelcomeView {
-    background: url("food.png") left bottom;
-    background-size: cover;
-  }
-
-.UserView {
-    background: url("https://cdn.auth0.com/blog/whatabyte-portal/patio.jpeg") left
-      bottom;
-    background-size: cover;
-  }
 
 
 #cy {
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    height: 80%;
     position: absolute;
     top: 0px;
     left: 0px;

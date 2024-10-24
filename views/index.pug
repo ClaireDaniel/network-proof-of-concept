@@ -2,35 +2,110 @@ extends layout
 
 block layout-content
   div.View.WelcomeView
-    h1.Banner WHATABYTE
-
-    div.Message
-      div.Title
-        h3 Making the Best
-        h1 Food For Devs
-        h1#year  
-
-        script.
-            document.getElementById('year').textContent = pugs('cute');
-
-      span.Details Access the WHATABYTE Team Portal
-    div.NavButtons
-      a(href="/user")
-          div.NavButton Just dive in!
+    h1.Banner MAPPING URBAN PLATFORM ECOSYSTEMS
 
     div#cy
 
     script. 
+
+        var shapeSpec = {'government' : 'triangle', 'private' : 'rectangle'};
+
+        console.log(Object.keys(shapeSpec).length);
+
         var cy = cytoscape({
-        container: document.getElementById('cy'),
-        elements: [
-            { data: { id: 'a' } },
-            { data: { id: 'b' } },
-            {
-            data: {
-                id: 'ab',
-                source: 'a',
-                target: 'b'
+
+        container: document.getElementById('cy'), // container to render in
+        autolock: false,
+
+
+        elements: [ // list of graph elements to start with
+            { // node a
+            data: { id: 'A', color: '#ff0000', weight: 100, type: 'government', shape: 'rectangle' }
+            },
+            { // node b
+            data: { id: 'B', color: '#0000ff', weight: 50, type: 'private', shape:'triangle' }
+            },
+            { // edge ab
+            data: { id: 'ab', source: 'A', target: 'B' }
             }
-            }]
+        ],
+
+        style: [ // the stylesheet for the graph
+            {
+            selector: 'node',
+            style: {
+                'background-color': 'mapData(weight, 0, 100, blue, red)',
+                'label': 'data(id)',
+                'shape': 'data(shape)'
+            },
+            },
+
+     
+
+            {
+            selector: 'edge',
+            style: {
+                'width': 3,
+                'line-color': '#ccc',
+                'target-arrow-color': '#ccc',
+                'target-arrow-shape': 'triangle',
+                'curve-style': 'bezier'
+            }
+            }
+        ],
+
+        layout: {
+            name: 'grid',
+            rows: 1
+        }
+
+        });
+
+        //Things that happen when nodes are clicked
+        // cy.nodes().on('click', function(e){
+        //    var ele = e.target;
+        //    console.log(e)
+        //    new Opentip("#".concat(ele.id()), { target: "#".concat(ele.id()), tipJoint: "bottom" });
+        //    }); 
+
+        var count = 0;
+        var tipCount = 0;
+
+        cy.on('mouseover', 'node', function(evt){
+            var node = evt.target;
+
+            pop = document.createElement('div');
+            pop.id = 'new';
+            pop.style.position = 'absolute';
+            pop.style.top = node._private.position.y;
+            pop.style.top = node._private.position.x;
+            pop.style.width = 1;
+            pop.style.height = 1;
+            pop.innerText = "This is a paragraph";
+            document.body.appendChild(pop);
+            
+
+
+            var myOpentip = new Opentip($("#new"));
+            myOpentip.setContent(node.id());
+            myOpentip.show(); // Shows the tooltip immediately
+
+            count = 1;
+            tipCount = tipCount + 1;
+            console.log(count)
+
+            });
+
+            
+        cy.on('mouseout', 'node', function(evt){
+            if(count == 1){
+                const element = document.getElementById("new");
+                element.remove();
+
+                const element2 = document.getElementById("opentip-".concat(tipCount));
+                element2.remove();
+
+                count = 0;
+                console.log(count)
+            }
         });
