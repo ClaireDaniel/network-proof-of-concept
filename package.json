@@ -1,0 +1,22 @@
+{
+  "name": "platform_network",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./index.js",
+    "ui": "browser-sync start --config bs-config.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^3.0.3",
+    "nodemon": "^3.1.7"
+  },
+  "dependencies": {
+    "cytoscape": "^3.30.3",
+    "express": "^4.21.1",
+    "pug": "^3.0.3"
+  }
+}
