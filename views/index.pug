@@ -3,14 +3,13 @@ extends layout
 block layout-content
   div.View.WelcomeView
     h1.Banner MAPPING URBAN PLATFORM ECOSYSTEMS
-
+    
     div#cy
-
+       //div.categories Hello
     script. 
 
         var shapeSpec = {'government' : 'triangle', 'private' : 'rectangle'};
 
-        console.log(Object.keys(shapeSpec).length);
 
         var cy = cytoscape({
 
@@ -19,14 +18,36 @@ block layout-content
 
 
         elements: [ // list of graph elements to start with
+            { // node e
+            data: { id: 'E', color: '#000000', weight: 0, type: 'private', shape:'rectangle', parent: 'G'},
+            position: {x: 400, y: 150},
+            locked: true,
+            },
+            { // node f
+            data: { id: 'F', color: '#000000', weight: 0, type: 'private', shape:'rectangle', parent: 'G'},
+            position: {x: 100, y: 500},
+            locked: true,
+            },
+             { // node g
+            data: { id: 'G', color: '#0000FF', weight: 75, type: 'private', shape:'rectangle'}
+            },
+
             { // node a
-            data: { id: 'A', color: '#ff0000', weight: 100, type: 'government', shape: 'rectangle' }
+            data: { id: 'A', color: '#ff0000', weight: 100, type: 'government', shape: 'rectangle', parent: 'B', category:'hi' }
             },
             { // node b
-            data: { id: 'B', color: '#0000ff', weight: 50, type: 'private', shape:'triangle' }
+            data: { id: 'B', color: '#0000ff', weight: 50, type: 'private', shape:'triangle', opacity: 5 }
             },
-            { // edge ab
-            data: { id: 'ab', source: 'A', target: 'B' }
+            { // node c
+            data: { id: 'C', color: '#0000ff', weight: 75, type: 'private', shape:'rectangle', parent: 'B' }
+            },
+            { // node d
+            data: { id: 'D', color: '#0000ff', weight: 75, type: 'private', shape:'rectangle'}
+            },
+
+
+            { // edge ac
+            data: { id: 'ac', source: 'A', target: 'C' }
             }
         ],
 
@@ -36,9 +57,18 @@ block layout-content
             style: {
                 'background-color': 'mapData(weight, 0, 100, blue, red)',
                 'label': 'data(id)',
-                'shape': 'data(shape)'
+                'shape': 'data(shape)',
+                
             },
             },
+
+            {
+            selector: 'node[!parent]',
+            style: {
+                'background-opacity': 0.5
+            },
+            },
+            
 
      
 
@@ -61,12 +91,9 @@ block layout-content
 
         });
 
-        //Things that happen when nodes are clicked
-        // cy.nodes().on('click', function(e){
-        //    var ele = e.target;
-        //    console.log(e)
-        //    new Opentip("#".concat(ele.id()), { target: "#".concat(ele.id()), tipJoint: "bottom" });
-        //    }); 
+     
+
+        //Things that happen when nodes are moused over
 
         var count = 0;
         var tipCount = 0;
@@ -74,38 +101,54 @@ block layout-content
         cy.on('mouseover', 'node', function(evt){
             var node = evt.target;
 
-            pop = document.createElement('div');
-            pop.id = 'new';
-            pop.style.position = 'absolute';
-            pop.style.top = node._private.position.y;
-            pop.style.top = node._private.position.x;
-            pop.style.width = 1;
-            pop.style.height = 1;
-            pop.innerText = "This is a paragraph";
-            document.body.appendChild(pop);
+            placeKeeper = document.createElement('div');
+            placeKeeper.id = 'placekeeper';
+            placeKeeper.style.top = node._private.position.y;
+            placeKeeper.style.top = node._private.position.x;
+            document.body.appendChild(placeKeeper);
             
-
-
-            var myOpentip = new Opentip($("#new"));
+            var myOpentip = new Opentip($("#placekeeper"), {style: 'glass', borderRadius: 2});
             myOpentip.setContent(node.id());
             myOpentip.show(); // Shows the tooltip immediately
 
             count = 1;
             tipCount = tipCount + 1;
-            console.log(count)
-
             });
 
-            
         cy.on('mouseout', 'node', function(evt){
             if(count == 1){
-                const element = document.getElementById("new");
+                const element = document.getElementById("placekeeper");
                 element.remove();
 
                 const element2 = document.getElementById("opentip-".concat(tipCount));
                 element2.remove();
 
                 count = 0;
-                console.log(count)
+                
             }
         });
+
+        //Positioning controls on nodes 
+        cy.on('drag', 'node', function(evt){
+            var node = evt.target;
+            var data = node.data()
+            var pos = cy.$('#' + node.id()).position()
+            
+            cat = data.category
+            console.log(cat)
+            console.log(pos)
+
+            if (cat == 'hi'){
+                console.log('move trigger');
+                if (pos.x > 200){
+                    console.log('yes');
+                    cy.$('#' + node.id()).position('x', 200);
+                    cat = 0
+                }
+            }
+        });
+
+
+    //if (node.category() ==1){
+               // if (node
+           // }
