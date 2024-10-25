@@ -48,7 +48,13 @@ block layout-content
 
             { // edge ac
             data: { id: 'ac', source: 'A', target: 'C' }
+            },
+
+            { // edge ad
+            data: { id: 'ad', source: 'A', target: 'D' }
             }
+
+
         ],
 
         style: [ // the stylesheet for the graph
@@ -68,10 +74,7 @@ block layout-content
                 'background-opacity': 0.5
             },
             },
-            
-
      
-
             {
             selector: 'edge',
             style: {
@@ -81,7 +84,9 @@ block layout-content
                 'target-arrow-shape': 'triangle',
                 'curve-style': 'bezier'
             }
-            }
+            },
+
+            
         ],
 
         layout: {
@@ -113,7 +118,7 @@ block layout-content
 
             count = 1;
             tipCount = tipCount + 1;
-            });
+        });
 
         cy.on('mouseout', 'node', function(evt){
             if(count == 1){
@@ -148,7 +153,28 @@ block layout-content
             }
         });
 
+        //Highlighting Connections
+        cy.on('mousedown', 'node', function(evt){
+            var node = evt.target;
+            var neighbourhood = cy.$('#' + node.id()).neighborhood()
 
-    //if (node.category() ==1){
-               // if (node
-           // }
+            for (var i = 0; i < neighbourhood.length; i++){
+                var group = neighbourhood[i]._private.group;
+                var id = neighbourhood[i].id();
+
+                cy.$('#' + id).style('background-color', '#00FF00');
+                console.log('#' + id)
+            }
+        });
+
+        cy.on('mouseup', 'node', function(evt){
+            var node = evt.target;
+            var neighbourhood = cy.$('#' + node.id()).neighborhood()
+
+            for (var i = 0; i < neighbourhood.length; i++){
+                var group = neighbourhood[i]._private.group;
+                var id = neighbourhood[i].id();
+                cy.$('#' + id).removeStyle()
+            }
+        });
+    
