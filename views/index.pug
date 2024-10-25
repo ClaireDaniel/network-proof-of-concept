@@ -1,180 +1,187 @@
 extends layout
 
 block layout-content
-  div.View.WelcomeView
-    h1.Banner MAPPING URBAN PLATFORM ECOSYSTEMS
-    
-    div#cy
-       //div.categories Hello
+    div.View.WelcomeView
+        h1.Banner MAPPING URBAN PLATFORM ECOSYSTEMS
+        
+        div#cy
+            //div.categories Hello
     script. 
 
-        var shapeSpec = {'government' : 'triangle', 'private' : 'rectangle'};
+                var shapeSpec = {'government' : 'triangle', 'private' : 'rectangle'};
 
 
-        var cy = cytoscape({
+                var cy = cytoscape({
 
-        container: document.getElementById('cy'), // container to render in
-        autolock: false,
-
-
-        elements: [ // list of graph elements to start with
-            { // node e
-            data: { id: 'E', color: '#000000', weight: 0, type: 'private', shape:'rectangle', parent: 'G'},
-            position: {x: 400, y: 150},
-            locked: true,
-            },
-            { // node f
-            data: { id: 'F', color: '#000000', weight: 0, type: 'private', shape:'rectangle', parent: 'G'},
-            position: {x: 100, y: 500},
-            locked: true,
-            },
-             { // node g
-            data: { id: 'G', color: '#0000FF', weight: 75, type: 'private', shape:'rectangle'}
-            },
-
-            { // node a
-            data: { id: 'A', color: '#ff0000', weight: 100, type: 'government', shape: 'rectangle', parent: 'B', category:'hi' }
-            },
-            { // node b
-            data: { id: 'B', color: '#0000ff', weight: 50, type: 'private', shape:'triangle', opacity: 5 }
-            },
-            { // node c
-            data: { id: 'C', color: '#0000ff', weight: 75, type: 'private', shape:'rectangle', parent: 'B' }
-            },
-            { // node d
-            data: { id: 'D', color: '#0000ff', weight: 75, type: 'private', shape:'rectangle'}
-            },
+                container: document.getElementById('cy'), // container to render in
+                autolock: false,
+                // initial viewport state:
+                zoom: 1,
+                pan: { x: 0, y: 0 },
 
 
-            { // edge ac
-            data: { id: 'ac', source: 'A', target: 'C' }
-            },
+                elements: [ // list of graph elements to start with
+                    { // node e
+                    data: { id: 'E', color: '#000000', weight: 0, type: 'private', shape:'rectangle', parent: 'G'},
+                    position: {x: 400, y: 150},
+                    locked: true,
+                    },
+                    { // node f
+                    data: { id: 'F', color: '#000000', weight: 0, type: 'private', shape:'rectangle', parent: 'G'},
+                    position: {x: 100, y: 300},
+                    locked: true,
+                    },
+                    { // node g
+                    data: { id: 'G', color: '#0000FF', weight: 75, type: 'private', shape:'rectangle'}
+                    },
 
-            { // edge ad
-            data: { id: 'ad', source: 'A', target: 'D' }
-            }
+                    { // node a
+                    data: { id: 'A', color: '#ff0000', weight: 100, type: 'government', shape: 'rectangle', parent: 'B', category:'hi' }
+                    },
+                    { // node b
+                    data: { id: 'B', color: '#0000ff', weight: 50, type: 'private', shape:'triangle', opacity: 5 }
+                    },
+                    { // node c
+                    data: { id: 'C', color: '#0000ff', weight: 75, type: 'private', shape:'rectangle', parent: 'B' }
+                    },
+                    { // node d
+                    data: { id: 'D', color: '#0000ff', weight: 75, type: 'private', shape:'rectangle'}
+                    },
 
 
-        ],
+                    { // edge ac
+                    data: { id: 'ac', source: 'A', target: 'C' }
+                    },
 
-        style: [ // the stylesheet for the graph
-            {
-            selector: 'node',
-            style: {
-                'background-color': 'mapData(weight, 0, 100, blue, red)',
-                'label': 'data(id)',
-                'shape': 'data(shape)',
-                
-            },
-            },
+                    { // edge ad
+                    data: { id: 'ad', source: 'A', target: 'D' }
+                    }
 
-            {
-            selector: 'node[!parent]',
-            style: {
-                'background-opacity': 0.5
-            },
-            },
-     
-            {
-            selector: 'edge',
-            style: {
-                'width': 3,
-                'line-color': '#ccc',
-                'target-arrow-color': '#ccc',
-                'target-arrow-shape': 'triangle',
-                'curve-style': 'bezier'
-            }
-            },
 
+                ],
+
+                style: [ // the stylesheet for the graph
+                    {
+                    selector: 'node',
+                    style: {
+                        'background-color': 'mapData(weight, 0, 100, blue, red)',
+                        'label': 'data(id)',
+                        'shape': 'data(shape)',
+                        
+                    },
+                    },
+
+                    {
+                    selector: 'node[!parent]',
+                    style: {
+                        'background-opacity': 0.5
+                    },
+                    },
             
-        ],
+                    {
+                    selector: 'edge',
+                    style: {
+                        'width': 3,
+                        'line-color': '#ccc',
+                        'target-arrow-color': '#ccc',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'unbundled-bezier',
+                        'control-point-distances': '-8 4 -8',
+                        //'control-point-weights': '0.5 0.5 0.5',
+                        
+                        
+                    }
+                    },
 
-        layout: {
-            name: 'grid',
-            rows: 1
-        }
+                    
+                ],
 
-        });
-
-     
-
-        //Things that happen when nodes are moused over
-
-        var count = 0;
-        var tipCount = 0;
-
-        cy.on('mouseover', 'node', function(evt){
-            var node = evt.target;
-
-            placeKeeper = document.createElement('div');
-            placeKeeper.id = 'placekeeper';
-            placeKeeper.style.top = node._private.position.y;
-            placeKeeper.style.top = node._private.position.x;
-            document.body.appendChild(placeKeeper);
-            
-            var myOpentip = new Opentip($("#placekeeper"), {style: 'glass', borderRadius: 2});
-            myOpentip.setContent(node.id());
-            myOpentip.show(); // Shows the tooltip immediately
-
-            count = 1;
-            tipCount = tipCount + 1;
-        });
-
-        cy.on('mouseout', 'node', function(evt){
-            if(count == 1){
-                const element = document.getElementById("placekeeper");
-                element.remove();
-
-                const element2 = document.getElementById("opentip-".concat(tipCount));
-                element2.remove();
-
-                count = 0;
-                
-            }
-        });
-
-        //Positioning controls on nodes 
-        cy.on('drag', 'node', function(evt){
-            var node = evt.target;
-            var data = node.data()
-            var pos = cy.$('#' + node.id()).position()
-            
-            cat = data.category
-            console.log(cat)
-            console.log(pos)
-
-            if (cat == 'hi'){
-                console.log('move trigger');
-                if (pos.x > 200){
-                    console.log('yes');
-                    cy.$('#' + node.id()).position('x', 200);
-                    cat = 0
+                layout: {
+                    name: 'grid',
+                    rows: 1
                 }
-            }
-        });
 
-        //Highlighting Connections
-        cy.on('mousedown', 'node', function(evt){
-            var node = evt.target;
-            var neighbourhood = cy.$('#' + node.id()).neighborhood()
+                });
 
-            for (var i = 0; i < neighbourhood.length; i++){
-                var group = neighbourhood[i]._private.group;
-                var id = neighbourhood[i].id();
+            
 
-                cy.$('#' + id).style('background-color', '#00FF00');
-                console.log('#' + id)
-            }
-        });
+                //Things that happen when nodes are moused over
 
-        cy.on('mouseup', 'node', function(evt){
-            var node = evt.target;
-            var neighbourhood = cy.$('#' + node.id()).neighborhood()
+                var count = 0;
+                var tipCount = 0;
 
-            for (var i = 0; i < neighbourhood.length; i++){
-                var group = neighbourhood[i]._private.group;
-                var id = neighbourhood[i].id();
-                cy.$('#' + id).removeStyle()
-            }
-        });
-    
+                cy.on('mouseover', 'node', function(evt){
+                    var node = evt.target;
+
+                    placeKeeper = document.createElement('div');
+                    placeKeeper.id = 'placekeeper';
+                    placeKeeper.style.top = node._private.position.y;
+                    placeKeeper.style.top = node._private.position.x;
+                    document.body.appendChild(placeKeeper);
+                    
+                    var myOpentip = new Opentip($("#placekeeper"), {style: 'glass', borderRadius: 2});
+                    myOpentip.setContent(node.id());
+                    myOpentip.show(); // Shows the tooltip immediately
+
+                    count = 1;
+                    tipCount = tipCount + 1;
+                });
+
+                cy.on('mouseout', 'node', function(evt){
+                    if(count == 1){
+                        const element = document.getElementById("placekeeper");
+                        element.remove();
+
+                        const element2 = document.getElementById("opentip-".concat(tipCount));
+                        element2.remove();
+
+                        count = 0;
+                        
+                    }
+                });
+
+                //Positioning controls on nodes 
+                cy.on('drag', 'node', function(evt){
+                    var node = evt.target;
+                    var data = node.data()
+                    var pos = cy.$('#' + node.id()).position()
+                    
+                    cat = data.category
+                    console.log(cat)
+                    console.log(pos)
+
+                    if (cat == 'hi'){
+                        console.log('move trigger');
+                        if (pos.x > 200){
+                            console.log('yes');
+                            cy.$('#' + node.id()).position('x', 200);
+                            cat = 0
+                        }
+                    }
+                });
+
+                //Highlighting Connections
+                cy.on('mousedown', 'node', function(evt){
+                    var node = evt.target;
+                    var neighbourhood = cy.$('#' + node.id()).neighborhood()
+
+                    for (var i = 0; i < neighbourhood.length; i++){
+                        var group = neighbourhood[i]._private.group;
+                        var id = neighbourhood[i].id();
+
+                        cy.$('#' + id).style('background-color', '#00FF00');
+                        console.log('#' + id)
+                    }
+                });
+
+                cy.on('mouseup', 'node', function(evt){
+                    var node = evt.target;
+                    var neighbourhood = cy.$('#' + node.id()).neighborhood()
+
+                    for (var i = 0; i < neighbourhood.length; i++){
+                        var group = neighbourhood[i]._private.group;
+                        var id = neighbourhood[i].id();
+                        cy.$('#' + id).removeStyle()
+                    }
+                });
+            
